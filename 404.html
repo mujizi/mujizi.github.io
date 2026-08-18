@@ -1,0 +1,64 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><meta name="description" content="页面不存在"><meta name="theme-color" content="#dce9f3"><meta name="generator" content="Astro v5.18.2"><meta property="og:type" content="website"><meta property="og:title" content="未发现这颗星球"><meta property="og:description" content="页面不存在"><meta property="og:image" content="/art/home-02ca1697.webp"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="未发现这颗星球"><meta name="twitter:description" content="页面不存在"><meta name="twitter:image" content="/art/home-02ca1697.webp"><link rel="icon" href="/favicon.svg"><title>本淇｜星际工作经历</title><link rel="stylesheet" href="/_astro/index.CwdNUEyH.css"></head> <body class> <a class="skip-link" href="#content">跳到正文</a> <header class="topbar"> <a href="/#top" class="site-mark" data-journey-nav="home" aria-label="About Benqi，返回旅程总览"> <span class="site-orbit" aria-hidden="true"></span> <span>About Benqi</span> </a> <nav class="desktop-nav" aria-label="主导航"> <a class="nav-home" data-journey-nav="home" href="/#top">总览</a> <a data-journey-nav="xfilm" href="/#xfilm"> 西影 </a><a data-journey-nav="meituan" href="/#meituan"> 美团 </a><a data-journey-nav="pingan" href="/#pingan"> 平安 </a><a data-journey-nav="jd" href="/#jd"> 京东 </a><a data-journey-nav="patsnap" href="/#patsnap"> Patsnap </a> </nav> <a class="mail-link" href="mailto:benqiwang123@gmail.com" aria-label="发送邮件">benqiwang123@gmail.com</a> <nav class="mobile-nav" aria-label="移动端章节导航"> <a data-journey-nav="home" href="/#top">总览</a> <a data-journey-nav="xfilm" href="/#xfilm"> 西影 </a><a data-journey-nav="meituan" href="/#meituan"> 美团 </a><a data-journey-nav="pingan" href="/#pingan"> 平安 </a><a data-journey-nav="jd" href="/#jd"> 京东 </a><a data-journey-nav="patsnap" href="/#patsnap"> Patsnap </a> </nav> </header> <main id="content">  <section class="not-found"> <p>404</p> <h1>这颗星球还没有被发现</h1> <a href="/#top">回到星际中转站</a> </section>  </main> <footer class="site-footer"> <p>从模型，到真正可用的系统。</p> <a href="mailto:benqiwang123@gmail.com">benqiwang123@gmail.com</a> <small>Local-first · Astro static portfolio</small> </footer> <script>
+      (() => {
+        const journey = document.querySelector('[data-journey-root]');
+        if (!journey) return;
+
+        const initialSection = journey.getAttribute('data-initial-section');
+        const navLinks = [...document.querySelectorAll('[data-journey-nav]')];
+        const sections = [...document.querySelectorAll('[data-journey-section]')];
+
+        const activate = (slug, updateUrl = true) => {
+          navLinks.forEach((link) => {
+            const current = link.getAttribute('data-journey-nav') === slug;
+            link.classList.toggle('active', current);
+            if (current) link.setAttribute('aria-current', 'location');
+            else link.removeAttribute('aria-current');
+          });
+
+          if (!updateUrl) return;
+          const nextUrl = slug === 'home' ? '/' : `/#${slug}`;
+          if (`${location.pathname}${location.hash}` !== nextUrl) {
+            history.replaceState(history.state, '', nextUrl);
+          }
+        };
+
+        const requestedSection = initialSection || location.hash.slice(1);
+        if (requestedSection) {
+          if (initialSection) history.replaceState(history.state, '', `/#${initialSection}`);
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            document.getElementById(requestedSection)?.scrollIntoView({ block: 'start', behavior: 'instant' });
+          }));
+        }
+
+        const syncActiveSection = () => {
+          const marker = Math.min(innerHeight * .34, 320) + 8;
+          let current = sections[0];
+          sections.forEach((section) => {
+            if (section.getBoundingClientRect().top <= marker) current = section;
+          });
+          activate(current?.getAttribute('data-journey-section') || 'home');
+        };
+
+        let ticking = false;
+        const requestSync = () => {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(() => {
+            syncActiveSection();
+            ticking = false;
+          });
+        };
+
+        const observer = new IntersectionObserver(() => {
+          requestSync();
+        }, {
+          rootMargin: '-18% 0px -58% 0px',
+          threshold: [0, .05, .2]
+        });
+
+        sections.forEach((section) => observer.observe(section));
+        window.addEventListener('scroll', requestSync, { passive: true });
+        window.addEventListener('resize', requestSync, { passive: true });
+        activate(requestedSection || 'home', false);
+      })();
+    </script> </body> </html>
